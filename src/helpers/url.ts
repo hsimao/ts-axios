@@ -1,4 +1,4 @@
-import { isDate, isObject } from './util'
+import { isDate, isPlainObject } from './util'
 
 // encode 特殊字符支持方法
 // 對於字符 @、:、$、,、、[、]，允許出現在 url 中的，不要被 encode，且需把空格 轉換成 +
@@ -64,7 +64,7 @@ export function buildURL(url: string, params?: any): string {
     values.forEach(val => {
       if (isDate(val)) {
         val = val.toISOString()
-      } else if (isObject(val)) {
+      } else if (isPlainObject(val)) {
         val = JSON.stringify(val)
       }
       // key 跟 val 使用 encode 轉換並組合
