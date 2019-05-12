@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from './types'
 import xhr from './xhr'
 import { buildURL } from './helpers/url'
 import { transformRequest } from './helpers/data'
+import { processHeaders } from './helpers/headers'
 
 function axios(config: AxiosRequestConfig): void {
   processConfig(config)
@@ -11,6 +12,8 @@ function axios(config: AxiosRequestConfig): void {
 // 發送請求之前 config 要先進行的處理
 function processConfig(config: AxiosRequestConfig): void {
   config.url = transformURL(config)
+  // headers 要在 data 之前, 因為 headers 有用到 data 原始屬性判斷
+  config.headers = transformHeaders(config)
   config.data = transformRequestData(config)
 }
 
@@ -23,6 +26,11 @@ function transformURL(config: AxiosRequestConfig): string {
 // 將發送請求的 data 參數，轉換為 json格式字串
 function transformRequestData(config: AxiosRequestConfig): any {
   return transformRequest(config.data)
+}
+
+function transformHeaders(config: AxiosRequestConfig): any {
+  const { headers = {}, data } = config
+  return processHeaders(headers, data)
 }
 
 export default axios
