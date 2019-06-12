@@ -1,5 +1,7 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 
+import { parseHeaders } from './helpers/headers'
+
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise(resolve => {
     const { url, method = 'get', data = null, headers, responseType } = config
@@ -17,7 +19,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         return
       }
       // 依據自訂的 config responseType 來判斷回傳種類
-      const responseHeaders = request.getAllResponseHeaders()
+      const responseHeaders = parseHeaders(request.getAllResponseHeaders())
       const responseData = responseType !== 'text' ? request.response : request.responseText
       const response: AxiosResponse = {
         data: responseData,

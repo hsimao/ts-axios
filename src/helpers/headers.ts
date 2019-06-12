@@ -15,7 +15,6 @@ function normalizeHeaderName(headers: any, normalizedName: string): void {
 }
 
 // headers 設置處理, 依據 data 屬性來判斷設置不同 Content-Type
-
 export function processHeaders(headers: any, data: any): any {
   // headers 參數命名統一處理
   normalizeHeaderName(headers, 'Content-Type')
@@ -28,4 +27,40 @@ export function processHeaders(headers: any, data: any): any {
   }
 
   return headers
+}
+
+// 解析回應的 headers 資料, 將原始字串解析成物件格式
+/* 原始取得資料如下
+  date: Fri, 05 Apr 2019 12:40:49 GMT
+  etag: W/"d-Ssxx4FRxEutDLwo2+xkkxKc4y0k"
+  connection: keep-alive
+  x-powered-by: Express
+  content-length: 13
+  content-type: application/json; charset=utf-8
+*/
+/* 解析成以下物件格式
+  {
+    date: 'Fri, 05 Apr 2019 12:40:49 GMT'
+    etag: 'W/"d-Ssxx4FRxEutDLwo2+xkkxKc4y0k"',
+    connection: 'keep-alive',
+    'x-powered-by': 'Express',
+    'content-length': '13'
+    'content-type': 'application/json; charset=utf-8'
+  }
+*/
+export function parseHeaders(headers: string): any {
+  let parsed = Object.create(null)
+  if (!headers) {
+    return parsed
+  }
+
+  headers.split('\r\n').forEach(line => {
+    let [key, val] = line.split(':')
+    key = key.trim().toLowerCase()
+    if (!key) return
+    if (val) val = val.trim()
+    parsed[key] = val
+  })
+
+  return parsed
 }
