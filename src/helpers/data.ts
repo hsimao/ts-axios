@@ -7,3 +7,15 @@ export function transformRequest(data: any): any {
   }
   return data
 }
+
+// 解析回應的資料, 將字串轉換成物件格式
+export function transformResponse(data: any): any {
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data)
+    } catch (e) {
+      // do nothing
+    }
+  }
+  return data
+}
